@@ -2,6 +2,7 @@ package lesson2
 
 import java.io.BufferedWriter
 import java.io.File
+import java.lang.NullPointerException
 import java.util.*
 import kotlin.test.assertEquals
 
@@ -77,6 +78,8 @@ abstract class AbstractAlgorithmsTests {
         assertEquals("", longestCommonSubstring("мой мир", "я"))
         assertEquals("зд", longestCommonSubstring("здравствуй мир", "мы здесь"))
         assertEquals("СЕРВАТОР", longestCommonSubstring("ОБСЕРВАТОРИЯ", "КОНСЕРВАТОРЫ"))
+        assertEquals("aaaaaa", longestCommonSubstring("aaaaaaag f rzdrdff", "fgzdrdffgh faaaaaaf")) //из двух
+        // одинаковой длины выбрать первое
         assertEquals("огда ", longestCommonSubstring(
                 """
 Мой дядя самых честных правил,
@@ -654,6 +657,7 @@ abstract class AbstractAlgorithmsTests {
         assertEquals(1, calcPrimesNumber(2))
         assertEquals(2, calcPrimesNumber(4))
         assertEquals(4, calcPrimesNumber(10))
+        assertEquals(8, calcPrimesNumber(19)) //не первое простое число на границе
         assertEquals(8, calcPrimesNumber(20))
         assertEquals(1000, calcPrimesNumber(7920))
         assertEquals(1229, calcPrimesNumber(10000))

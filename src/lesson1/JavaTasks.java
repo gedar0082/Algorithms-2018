@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.NumberFormat;
 import java.util.*;
 
 import static java.lang.Double.parseDouble;
@@ -114,7 +115,8 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
-    static public void sortTemperatures(String inputName, String outputName) throws IOException {
+    static public void sortTemperatures(String inputName, String outputName) throws IOException { // T = O(LgN) - worst;
+        //R = O(N); N - count of strings in file
         BufferedReader reader = new BufferedReader(new FileReader(inputName));
         Map<Double,Integer> arr = new TreeMap<>();
         String line;
@@ -162,7 +164,8 @@ public class JavaTasks {
      * 2
      * 2
      */
-    static public void sortSequence(String inputName, String outputName) throws IOException {
+    static public void sortSequence(String inputName, String outputName) throws IOException { // T = O(N), R = O(N),
+        // N = count of strings in file
         BufferedReader reader = new BufferedReader(new FileReader(inputName));
         TreeMap<Integer, Integer> sortedOrder = new TreeMap<>();
         ArrayDeque<Integer> baseOrder = new ArrayDeque<>();
