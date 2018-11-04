@@ -1,9 +1,26 @@
 package lesson1;
 
+import com.sun.jmx.remote.internal.ArrayQueue;
 import kotlin.NotImplementedError;
+import org.omg.CORBA.INTERNAL;
+
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+
+import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
+import static sun.swing.MenuItemLayoutHelper.max;
 
 @SuppressWarnings("unused")
 public class JavaTasks {
+    public JavaTasks()  {
+    }
+
     /**
      * Сортировка времён
      *
@@ -64,6 +81,7 @@ public class JavaTasks {
      */
     static public void sortAddresses(String inputName, String outputName) {
         throw new NotImplementedError();
+
     }
 
     /**
@@ -96,8 +114,23 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
-    static public void sortTemperatures(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortTemperatures(String inputName, String outputName) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(inputName));
+        Map<Double,Integer> arr = new TreeMap<>();
+        String line;
+        while((line = reader.readLine()) != null){
+            Double temp = Double.parseDouble(line);
+            arr.merge(temp, 1, (a,b) -> a + b);
+        }
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
+        for (Map.Entry<Double, Integer> entry: arr.entrySet()){
+            for(int i = 0; i < entry.getValue(); i ++){
+                writer.write(entry.getKey().toString() + '\n');
+            }
+        }
+        writer.close();
+
+
     }
 
     /**
@@ -129,8 +162,37 @@ public class JavaTasks {
      * 2
      * 2
      */
-    static public void sortSequence(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortSequence(String inputName, String outputName) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(inputName));
+        TreeMap<Integer, Integer> sortedOrder = new TreeMap<>();
+        ArrayDeque<Integer> baseOrder = new ArrayDeque<>();
+        String line;
+        while((line = reader.readLine()) != null){
+            int value = parseInt(line);
+            baseOrder.addFirst(value);
+            sortedOrder.merge(value, 1, (a,b) -> a + b);
+        }
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
+        int maxValueInMap = (Collections.max(sortedOrder.values()));
+        int maxKey = 0;
+        for (Map.Entry<Integer,Integer> entry: sortedOrder.entrySet()){
+            if(entry.getValue() == maxValueInMap){
+                maxKey = entry.getKey();
+                break;
+            }
+        }
+        while(baseOrder.size() != 0){
+            if(!baseOrder.getLast().equals(maxKey)){
+                writer.write(baseOrder.pollLast()+ "\n");
+            }else{
+                baseOrder.pollLast();
+            }
+        }
+        for(int i = 0; i < maxValueInMap; i ++){
+            writer.write(maxKey + "\n");
+        }
+        writer.close();
+
     }
 
     /**
