@@ -1,9 +1,17 @@
 package lesson2;
 
+import com.sun.jmx.remote.internal.ArrayQueue;
 import kotlin.NotImplementedError;
 import kotlin.Pair;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Set;
+import java.util.TreeMap;
+
+import static sun.swing.MenuItemLayoutHelper.max;
 
 @SuppressWarnings("unused")
 public class JavaAlgorithms {
@@ -97,7 +105,24 @@ public class JavaAlgorithms {
      * вернуть ту из них, которая встречается раньше в строке first.
      */
     static public String longestCommonSubstring(String firs, String second) {
-        throw new NotImplementedError();
+        int max = 0;
+        int point = 0;
+        StringBuilder res = new StringBuilder(firs);
+        int[][] arr = new int[firs.length()][second.length()];
+        if (firs.isEmpty() || second.isEmpty()) return " ";
+        for (int i = 1; i < firs.length(); i++){
+            for (int j = 1; j < second.length(); j++){
+                if ((firs.charAt(i - 1) == second.charAt(j - 1))) arr[i][j]++;
+                if (i > 1 && j > 1 && (firs.charAt(i - 1) == second.charAt(j - 1)) && (firs.charAt(i - 2) == second.charAt(j - 2))){
+                    arr[i][j] = arr[i - 1][j - 1] + 1;
+                    if (max < arr[i][j]){
+                        max = arr[i][j];
+                        point = i;
+                    }
+                }
+            }
+        }
+        return res.substring(point - max, point);
     }
 
     /**
