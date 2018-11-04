@@ -152,7 +152,6 @@ public class JavaAlgorithms {
             count = 0;
 
         }
-        System.out.println(limit);
         return arrOfSimp.size();
 
     }
