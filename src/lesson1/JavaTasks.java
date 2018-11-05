@@ -118,15 +118,15 @@ public class JavaTasks {
     static public void sortTemperatures(String inputName, String outputName) throws IOException { // T = O(LgN) - worst;
         //R = O(N); N - count of strings in file
         BufferedReader reader = new BufferedReader(new FileReader(inputName));
-        Map<Double,Integer> arr = new TreeMap<>();
+        Map<Double, Integer> arr = new TreeMap<>();
         String line;
-        while((line = reader.readLine()) != null){
+        while ((line = reader.readLine()) != null) {
             Double temp = Double.parseDouble(line);
-            arr.merge(temp, 1, (a,b) -> a + b);
+            arr.merge(temp, 1, (a, b) -> a + b);
         }
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
-        for (Map.Entry<Double, Integer> entry: arr.entrySet()){
-            for(int i = 0; i < entry.getValue(); i ++){
+        for (Map.Entry<Double, Integer> entry : arr.entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
                 writer.write(entry.getKey().toString() + '\n');
             }
         }
@@ -170,28 +170,28 @@ public class JavaTasks {
         TreeMap<Integer, Integer> sortedOrder = new TreeMap<>();
         ArrayDeque<Integer> baseOrder = new ArrayDeque<>();
         String line;
-        while((line = reader.readLine()) != null){
+        while ((line = reader.readLine()) != null) {
             int value = parseInt(line);
             baseOrder.addFirst(value);
-            sortedOrder.merge(value, 1, (a,b) -> a + b);
+            sortedOrder.merge(value, 1, (a, b) -> a + b);
         }
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
         int maxValueInMap = (Collections.max(sortedOrder.values()));
         int maxKey = 0;
-        for (Map.Entry<Integer,Integer> entry: sortedOrder.entrySet()){
-            if(entry.getValue() == maxValueInMap){
+        for (Map.Entry<Integer, Integer> entry : sortedOrder.entrySet()) {
+            if (entry.getValue() == maxValueInMap) {
                 maxKey = entry.getKey();
                 break;
             }
         }
-        while(baseOrder.size() != 0){
-            if(!baseOrder.getLast().equals(maxKey)){
-                writer.write(baseOrder.pollLast()+ "\n");
-            }else{
+        while (baseOrder.size() != 0) {
+            if (!baseOrder.getLast().equals(maxKey)) {
+                writer.write(baseOrder.pollLast() + "\n");
+            } else {
                 baseOrder.pollLast();
             }
         }
-        for(int i = 0; i < maxValueInMap; i ++){
+        for (int i = 0; i < maxValueInMap; i++) {
             writer.write(maxKey + "\n");
         }
         writer.close();

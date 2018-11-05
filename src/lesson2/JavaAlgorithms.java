@@ -5,11 +5,10 @@ import kotlin.NotImplementedError;
 import kotlin.Pair;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.TreeMap;
+import java.io.IOException;
+import java.util.*;
 
 import static sun.swing.MenuItemLayoutHelper.max;
 
@@ -136,7 +135,7 @@ public class JavaAlgorithms {
      * Справка: простым считается число, которое делится нацело только на 1 и на себя.
      * Единица простым числом не считается.
      */
-    static public int calcPrimesNumber(int limit) throws NullPointerException{               //T = O(lgN); R = O(N), N = limit
+    static public int calcPrimesNumber(int limit) throws NullPointerException {               //T = O(lgN); R = O(N), N = limit
         ArrayList<Integer> arrOfSimp = new ArrayList<>();
         if (limit < 2) {
             return 0;
@@ -144,7 +143,7 @@ public class JavaAlgorithms {
             arrOfSimp.add(2);
         }
         int count = 0;
-        for (int i = 3; i <= limit; i+=2) {
+        for (int i = 3; i <= limit; i += 2) {
             for (int j = 0; j < arrOfSimp.size(); j++) {
                 if (i % arrOfSimp.get(j) == 0) count++;
             }
@@ -182,7 +181,26 @@ public class JavaAlgorithms {
      * В файле буквы разделены пробелами, строки -- переносами строк.
      * Остальные символы ни в файле, ни в словах не допускаются.
      */
-    static public Set<String> baldaSearcher(String inputName, Set<String> words) {
-        throw new NotImplementedError();
+    static public Set<String> baldaSearcher(String inputName, Set<String> words) throws IOException {
+        Set<String> res = new HashSet<>();
+        String a;
+      /*  HashMap<ArrayList<Integer>, String> matrix = new HashMap<>(ArrayList<Integer>);
+        BufferedReader reader = new BufferedReader(new FileReader(inputName));
+        String line;
+        int row = 0;
+        while((line = reader.readLine()) != null) {
+           line.replaceAll("\\s","");
+           for(int i = 0; i < line.length(); i++){
+               ArrayList<Integer>
+               matrix.put()
+           }
+        }
+
+
+
+
+*/
+        return res;
+
     }
 }
