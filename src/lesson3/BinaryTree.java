@@ -3,7 +3,6 @@ package lesson3;
 import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.omg.CORBA.NO_IMPLEMENT;
 
 import java.util.*;
 
@@ -37,12 +36,10 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         Node<T> newNode = new Node<>(t);
         if (closest == null) {
             root = newNode;
-        }
-        else if (comparison < 0) {
+        } else if (comparison < 0) {
             assert closest.left == null;
             closest.left = newNode;
-        }
-        else {
+        } else {
             assert closest.right == null;
             closest.right = newNode;
         }
@@ -64,75 +61,63 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     /**
      * Удаление элемента в дереве
      * Средняя
+     * T = O(Height);
+     * R = O(1);
      */
     @Override
     public boolean remove(Object o) {
         if (o == null) return false;
-        System.out.println(1);
         if (root == null) return false;
-        System.out.println(2);
 
         Node<T> current = root;
         Node<T> parent = root;
-        boolean l = true;
-        System.out.println("null");
-        System.out.println(o);
 
-
-        while (l)
-        {
-            int result = current.value.compareTo((T)o);
-
-            if (result > 0)
-            {
+        while (true) {
+            int result = current.value.compareTo((T) o);
+            if (result > 0) {
                 parent = current;
                 current = current.left;
-            }
-            else if (result < 0)
-            {
+            } else if (result < 0) {
                 parent = current;
                 current = current.right;
-            }
-            else
-            {
-                l = false;
+            } else {
+                break;
             }
         }
-        System.out.println("toRemove " + current.value);
+
+        if (root.value == o) {
+            if (root.left == null && root.right == null) root = null;
+            else if (root.right == null) root = root.left;
+            else if (root.left == null) root = root.right;
+            else {
+                current = current.right;
+                while (current.left != null) current = current.left;
+                current.left = root.left;
+                root = root.right;
+            }
+            size--;
+            return true;
+        }
+
 
         if (current.right == null) {
-            System.out.println("FIRST");
-            if (parent == null) {
-                System.out.println("parent");
-                root = current.left;
-            } else {
-                System.out.println("normal");
-                int result = parent.value.compareTo(current.value);
-                if (result > 0) {
-                    System.out.println("result >0");
-                    parent.left = current.left;
-                } else if (result < 0) {
-                    System.out.println("result < 0");
-                    parent.right = current.left;
-                }
+            int result = parent.value.compareTo(current.value);
+            if (result > 0) {
+                parent.left = current.left;
+            } else if (result < 0) {
+                parent.right = current.left;
             }
-        }
-        else if (current.right.left == null) {
-            System.out.println("SECOND");
+        } else if (current.right.left == null) {
             current.right.left = current.left;
-            if (parent == null) {
-                root = current.right;
-            } else {
-                int result = parent.value.compareTo(current.value);
-                if (result > 0) {
-                    parent.left = current.right;
-                } else if (result < 0) {
-                    parent.right = current.right;
-                }
+
+            int result = parent.value.compareTo(current.value);
+            if (result > 0) {
+                parent.left = current.right;
+            } else if (result < 0) {
+                parent.right = current.right;
             }
-        }
-        else {
-            System.out.println("THIRD");
+
+        } else {
             Node<T> leftmost = current.right.left;
             Node<T> leftmostParent = current.right;
             while (leftmost.left != null) {
@@ -142,21 +127,18 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
             leftmostParent.left = leftmost.right;
             leftmost.left = current.left;
             leftmost.right = current.right;
-            if (parent == null) {
-                root = leftmost;
-            } else {
-                int result = parent.value.compareTo(current.value);
-                if (result > 0) {
-                    parent.left = leftmost;
-                } else if (result < 0) {
-                    parent.right = leftmost;
-                }
+
+            int result = parent.value.compareTo(current.value);
+            if (result > 0) {
+                parent.left = leftmost;
+            } else if (result < 0) {
+                parent.right = leftmost;
             }
+
         }
         size--;
         return true;
     }
-
 
 
     @Override
@@ -176,12 +158,10 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         int comparison = value.compareTo(start.value);
         if (comparison == 0) {
             return start;
-        }
-        else if (comparison < 0) {
+        } else if (comparison < 0) {
             if (start.left == null) return start;
             return find(start.left, value);
-        }
-        else {
+        } else {
             if (start.right == null) return start;
             return find(start.right, value);
         }
@@ -190,40 +170,45 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     public class BinaryTreeIterator implements Iterator<T> {
 
         private Node<T> current = null;
-        private Stack<Node<T>> stack;
-
-        private BinaryTreeIterator() {
-            stack = new Stack<>();
-            while (root != null){
-                stack.push(root);
-                root = root.left;
-            }
-        }
 
         /**
          * Поиск следующего элемента
          * Средняя
+         * T = O(N); N - height
+         * R = (1);
          */
         private Node<T> findNext() {
-            return stack.pop();
-
+            Node<T> next = null;
+            if (current == null) {
+                Node<T> min = root;
+                while (min.left != null) min = min.left;
+                next = min;
+            } else {
+                Node<T> tempRoot = root;
+                while (tempRoot != null) {
+                    if (tempRoot.value.compareTo(current.value) <= 0) tempRoot = tempRoot.right;
+                    else {
+                        next = tempRoot;
+                        tempRoot = tempRoot.left;
+                    }
+                }
+            }
+            return next;
         }
+
 
         @Override
         public boolean hasNext() {
-            return !stack.empty();
+            return findNext() != null;
         }
 
         @Override
         public T next() {
             current = findNext();
             if (current == null) throw new NoSuchElementException();
-            while (current.right != null) {
-                stack.push(current.right);
-                current.right = current.right.left;
-            }
             return current.value;
         }
+
 
         /**
          * Удаление следующего элемента
