@@ -1,6 +1,8 @@
 package lesson3
 
 import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Assertions
+import java.lang.NullPointerException
 import kotlin.test.Test
 import java.util.*
 import kotlin.test.assertEquals
@@ -50,6 +52,17 @@ class BinaryTreeTest {
     private fun <T : Comparable<T>> createKotlinTree(): CheckableSortedSet<T> = KtBinaryTree()
 
     private fun testRemove(create: () -> CheckableSortedSet<Int>) {
+        //содержание элемента
+        val toRemove = 19
+        val binarySet = create()
+        binarySet += 17
+        binarySet += 18
+        assertEquals(false, binarySet.remove(toRemove))
+        //когда удаляем null
+        val r = null;
+        val bS = create()
+        bS += 19
+        Assertions.assertThrows(NullPointerException::class.java) { bS.remove(r) }
         //когда удаляемое значение - root (без детей)
         println("first test")
         val deletableFst = 19
@@ -216,6 +229,15 @@ class BinaryTreeTest {
     }
 
     private fun testIteratorRemove(create: () -> CheckableSortedSet<Int>) {
+        //проверка постановки каретки
+        val bSet = create()
+        bSet += 19
+        bSet += 20
+        bSet.remove(19)
+        val iterator = bSet.iterator()
+        val element = iterator.next()
+        assertEquals(element, 20)
+        //native tests
         val random = Random()
         for (iteration in 1..100) {
             val list = mutableListOf<Int>()
@@ -239,7 +261,7 @@ class BinaryTreeTest {
                     iterator.remove()
                 }
             }
-            println()
+
             assertEquals<SortedSet<*>>(treeSet, binarySet, "After removal of $toRemove from $list")
             assertEquals(treeSet.size, binarySet.size)
             for (element in list) {
