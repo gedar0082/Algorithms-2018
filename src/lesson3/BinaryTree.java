@@ -3,6 +3,7 @@ package lesson3;
 import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.omg.CORBA.NO_IMPLEMENT;
 
 import java.util.*;
 
@@ -66,9 +67,97 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
      */
     @Override
     public boolean remove(Object o) {
-        // TODO
-        throw new NotImplementedError();
+        if (o == null) return false;
+        System.out.println(1);
+        if (root == null) return false;
+        System.out.println(2);
+
+        Node<T> current = root;
+        Node<T> parent = root;
+        boolean l = true;
+        System.out.println("null");
+        System.out.println(o);
+
+
+        while (l)
+        {
+            int result = current.value.compareTo((T)o);
+
+            if (result > 0)
+            {
+                parent = current;
+                current = current.left;
+            }
+            else if (result < 0)
+            {
+                parent = current;
+                current = current.right;
+            }
+            else
+            {
+                l = false;
+            }
+        }
+        System.out.println("toRemove " + current.value);
+
+        if (current.right == null) {
+            System.out.println("FIRST");
+            if (parent == null) {
+                System.out.println("parent");
+                root = current.left;
+            } else {
+                System.out.println("normal");
+                int result = parent.value.compareTo(current.value);
+                if (result > 0) {
+                    System.out.println("result >0");
+                    parent.left = current.left;
+                } else if (result < 0) {
+                    System.out.println("result < 0");
+                    parent.right = current.left;
+                }
+            }
+        }
+        else if (current.right.left == null) {
+            System.out.println("SECOND");
+            current.right.left = current.left;
+            if (parent == null) {
+                root = current.right;
+            } else {
+                int result = parent.value.compareTo(current.value);
+                if (result > 0) {
+                    parent.left = current.right;
+                } else if (result < 0) {
+                    parent.right = current.right;
+                }
+            }
+        }
+        else {
+            System.out.println("THIRD");
+            Node<T> leftmost = current.right.left;
+            Node<T> leftmostParent = current.right;
+            while (leftmost.left != null) {
+                leftmostParent = leftmost;
+                leftmost = leftmost.left;
+            }
+            leftmostParent.left = leftmost.right;
+            leftmost.left = current.left;
+            leftmost.right = current.right;
+            if (parent == null) {
+                root = leftmost;
+            } else {
+                int result = parent.value.compareTo(current.value);
+                if (result > 0) {
+                    parent.left = leftmost;
+                } else if (result < 0) {
+                    parent.right = leftmost;
+                }
+            }
+        }
+        size--;
+        return true;
     }
+
+
 
     @Override
     public boolean contains(Object o) {
@@ -101,27 +190,38 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     public class BinaryTreeIterator implements Iterator<T> {
 
         private Node<T> current = null;
+        private Stack<Node<T>> stack;
 
-        private BinaryTreeIterator() {}
+        private BinaryTreeIterator() {
+            stack = new Stack<>();
+            while (root != null){
+                stack.push(root);
+                root = root.left;
+            }
+        }
 
         /**
          * Поиск следующего элемента
          * Средняя
          */
         private Node<T> findNext() {
-            // TODO
-            throw new NotImplementedError();
+            return stack.pop();
+
         }
 
         @Override
         public boolean hasNext() {
-            return findNext() != null;
+            return !stack.empty();
         }
 
         @Override
         public T next() {
             current = findNext();
             if (current == null) throw new NoSuchElementException();
+            while (current.right != null) {
+                stack.push(current.right);
+                current.right = current.right.left;
+            }
             return current.value;
         }
 
