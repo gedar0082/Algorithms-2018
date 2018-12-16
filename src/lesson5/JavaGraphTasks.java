@@ -1,9 +1,9 @@
 package lesson5;
 
 import kotlin.NotImplementedError;
+import lesson5.impl.GraphBuilder;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class JavaGraphTasks {
@@ -32,10 +32,47 @@ public class JavaGraphTasks {
      *
      * Справка: Эйлеров цикл -- это цикл, проходящий через все рёбра
      * связного графа ровно по одному разу
+     * R = O(N) N - количество элементов
+     * в среднем случае T = O(N*K) - N - количество элементов, К - количество связей в getConnections()
+     * в худшем случае T = O(N^2)
      */
     public static List<Graph.Edge> findEulerLoop(Graph graph) {
-        throw new NotImplementedError();
+        ArrayList<Graph.Vertex> list = new ArrayList<>();
+        ArrayList<Graph.Edge> result = new ArrayList<>();
+        for (Graph.Vertex vertex : graph.getVertices()) {
+            if (graph.getConnections(vertex).size() % 2 == 1) return result;
+        }
+        Graph.Vertex vertex = graph.getVertices().iterator().next();
+        Stack<Graph.Vertex> stack = new Stack<>();
+        Set<Graph.Edge> set = new HashSet<>();
+        stack.push(vertex);
+        while (!stack.isEmpty()){
+            Graph.Vertex nextVertex = null;
+            Graph.Edge passedEdge = null;
+            for (Map.Entry<Graph.Vertex, Graph.Edge> connection : graph.getConnections(stack.peek()).entrySet()) {
+                if (!set.contains(connection.getValue())) {
+                    if (stack.peek().equals(connection.getValue().getBegin())) {
+                        nextVertex = connection.getValue().getEnd();
+                    } else {
+                        nextVertex = connection.getValue().getBegin();
+                    }
+                    passedEdge = connection.getValue();
+                }
+            }
+            if (nextVertex == null) {
+                list.add(stack.pop());
+            } else {
+                stack.push(nextVertex);
+                set.add(passedEdge);
+            }
+        }
+        for(int i = 0; i < list.size() - 1; i++){
+            result.add(graph.getConnection(list.get(i), list.get(i+1)));
+        }
+        return result;
     }
+
+
 
     /**
      * Минимальное остовное дерево.
@@ -64,9 +101,33 @@ public class JavaGraphTasks {
      * E    F    I
      * |
      * J ------------ K
+     * трудоёмкость T = O(N*K) N - количество вершин, K - количество связей
+     * ресурсоёмкость R = O(N) N - количество вершин
      */
     public static Graph minimumSpanningTree(Graph graph) {
-        throw new NotImplementedError();
+        GraphBuilder res = new GraphBuilder();
+        HashMap<Graph.Vertex, Integer> map = new HashMap<>();
+        int i = 0;
+        for (Graph.Vertex v : graph.getVertices()){
+            map.put(res.addVertex(v.getName()), i);
+            i++;
+        }
+        for (Graph.Edge edge : graph.getEdges()){
+            Graph.Vertex first = edge.getBegin();
+            Graph.Vertex second = edge.getEnd();
+            if (!map.get(first).equals(map.get(second))){
+                int oldF = map.get(first);
+                int newF = map.get(second);
+                res.addConnection(first, second, 0);
+                for (Map.Entry<Graph.Vertex, Integer> entry : map.entrySet()){
+                    if(entry.getValue().equals(oldF)){
+                        entry.setValue(newF);
+                    }
+                }
+            }
+        }
+
+        return res.build();
     }
 
     /**
