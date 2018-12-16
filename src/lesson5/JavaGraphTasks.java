@@ -67,7 +67,7 @@ public class JavaGraphTasks {
                 set.add(passedEdge);
             }
         }
-        for(int i = 0; i < list.size() - 1; i++){
+        for(int i = 0; i < list.size() - 1; i++ ){
             result.add(graph.getConnection(list.get(i), list.get(i+1)));
         }
         return result;
