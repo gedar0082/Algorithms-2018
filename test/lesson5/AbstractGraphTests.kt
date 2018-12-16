@@ -16,6 +16,7 @@ abstract class AbstractGraphTests {
             assertEquals(edges.size, size, "Euler loop should traverse all edges")
         } else {
             assertTrue(isEmpty(), "Euler loop should not exist")
+            return
         }
         for (edge in this) {
             assertTrue(edge in edges, "Edge $edge is not inside graph")
@@ -25,6 +26,8 @@ abstract class AbstractGraphTests {
         }
         assertTrue(this[0].isNeighbour(this[size - 1]), "Edges ${this[0]} & ${this[size - 1]} are not incident")
     }
+
+
 
     fun findEulerLoop(findEulerLoop: Graph.() -> List<Graph.Edge>) {
         val graph = GraphBuilder().apply {
@@ -65,6 +68,35 @@ abstract class AbstractGraphTests {
         }.build()
         val loop2 = graph2.findEulerLoop()
         loop2.assert(true, graph2)
+        val graph3 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, d)
+            addConnection(d, a)
+            addConnection(a, c)
+        }.build()
+        val loop3 = graph3.findEulerLoop()
+        loop3.assert(false, graph3)
+
+        val graph4 = GraphBuilder().apply {
+            val list = mutableListOf<Graph.Vertex>()
+            for (i in 0..200) {
+                list.add(addVertex(i.toString()))
+            }
+            for (i in 0 until list.size - 1){
+                for (j in i + 1 until list.size){
+                    addConnection(list[i], list[j])
+                }
+            }
+        }.build()
+        val loop4 = graph4.findEulerLoop()
+        loop4.assert(true, graph4)
+
+
     }
 
     fun minimumSpanningTree(minimumSpanningTree: Graph.() -> Graph) {
@@ -108,6 +140,21 @@ abstract class AbstractGraphTests {
         val tree2 = graph2.minimumSpanningTree()
         assertEquals(10, tree2.edges.size)
         assertEquals(10, tree2.findBridges().size)
+
+        val graph4 = GraphBuilder().apply {
+            val list = mutableListOf<Graph.Vertex>()
+            for (i in 0..200) {
+                list.add(addVertex(i.toString()))
+            }
+            for (i in 0 until list.size - 1){
+                for (j in i + 1 until list.size){
+                    addConnection(list[i], list[j])
+                }
+            }
+        }.build()
+        val tree4 = graph4.minimumSpanningTree()
+        assertEquals(200, tree4.edges.size)
+        assertEquals(200, tree4.findBridges().size)
     }
 
     fun largestIndependentVertexSet(largestIndependentVertexSet: Graph.() -> Set<Graph.Vertex>) {

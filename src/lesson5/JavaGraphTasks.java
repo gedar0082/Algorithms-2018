@@ -40,7 +40,7 @@ public class JavaGraphTasks {
         ArrayList<Graph.Vertex> list = new ArrayList<>();
         ArrayList<Graph.Edge> result = new ArrayList<>();
         for (Graph.Vertex vertex : graph.getVertices()) {
-            if (graph.getConnections(vertex).size() % 2 == 1) return result;
+            if (graph.getNeighbors(vertex).size() % 2 == 1) return result;
         }
         Graph.Vertex vertex = graph.getVertices().iterator().next();
         Stack<Graph.Vertex> stack = new Stack<>();
@@ -49,7 +49,8 @@ public class JavaGraphTasks {
         while (!stack.isEmpty()){
             Graph.Vertex nextVertex = null;
             Graph.Edge passedEdge = null;
-            for (Map.Entry<Graph.Vertex, Graph.Edge> connection : graph.getConnections(stack.peek()).entrySet()) {
+            for (Map.Entry<Graph.Vertex, Graph.Edge> connection :
+                    graph.getConnections(stack.peek()).entrySet()) {
                 if (!set.contains(connection.getValue())) {
                     if (stack.peek().equals(connection.getValue().getBegin())) {
                         nextVertex = connection.getValue().getEnd();
@@ -110,6 +111,7 @@ public class JavaGraphTasks {
         int i = 0;
         for (Graph.Vertex v : graph.getVertices()){
             map.put(res.addVertex(v.getName()), i);
+
             i++;
         }
         for (Graph.Edge edge : graph.getEdges()){
